@@ -8,11 +8,6 @@ Python · SQLite · TypeScript · JavaScript
 
 ![RelayBox operations console](docs/console.png)
 
-## Architecture
-
-![Architecture](docs/architecture.svg)
-
-
 ## What it does
 
 - Commits jobs to SQLite before returning success.
@@ -23,6 +18,10 @@ Python · SQLite · TypeScript · JavaScript
 - Exposes a same-origin console for inspecting state, enqueueing synthetic jobs, simulating failures, and replaying dead letters.
 
 This is a **single-host reference implementation**, not a hosted service. It uses Python's development HTTP server, binds only to loopback, and has no user authentication. Do not expose it to the internet or use sensitive payloads. The console's worker buttons demonstrate state transitions; they never execute payloads.
+
+## Tech stack
+
+Python 3.11+, SQLite, TypeScript and a browser console. The Python service uses the standard library.
 
 ## Run in under a minute
 
@@ -35,6 +34,10 @@ python -m relaybox.server --db relaybox.db --port 8080
 ```
 
 Open **http://127.0.0.1:8080**. Enqueue the example payload, then click **Acknowledge one**. Try **Simulate failure** three times, allowing the 2-second and 4-second retry delays between attempts. The job reaches dead letter; **Replay** resets its attempt budget.
+
+## Architecture
+
+![Architecture](docs/architecture.svg)
 
 ## Worker protocol
 
