@@ -107,8 +107,8 @@ class Store:
         fingerprint = hashlib.sha256(
             f"{body}\n{delay}\n{max_attempts}".encode("utf-8")
         ).hexdigest()
-        now = self.clock()
         with self.transaction() as db:
+            now = self.clock()
             if key is not None:
                 existing = db.execute(
                     "SELECT * FROM jobs WHERE queue=? AND idempotency_key=?", (queue, key)
@@ -140,8 +140,8 @@ class Store:
     def claim(self, queue, lease_seconds=30):
         queue_name(queue)
         integer(lease_seconds, "lease_seconds", 1, 3600)
-        now = self.clock()
         with self.transaction() as db:
+            now = self.clock()
             self.recover(db, now)
             row = db.execute("""
                 SELECT * FROM jobs WHERE queue=? AND state='ready' AND available_at<=?
@@ -170,8 +170,8 @@ class Store:
         return row
 
     def ack(self, job_id, token):
-        now = self.clock()
         with self.transaction() as db:
+            now = self.clock()
             self.owned(db, job_id, token, now)
             db.execute("""
                 UPDATE jobs SET state='done',lease_token=NULL,lease_until=NULL,updated_at=?
@@ -181,8 +181,8 @@ class Store:
     def fail(self, job_id, token, error="worker failed"):
         if not isinstance(error, str) or len(error) > 1000:
             raise ValueError("error must be a string of at most 1000 characters")
-        now = self.clock()
         with self.transaction() as db:
+            now = self.clock()
             row = self.owned(db, job_id, token, now)
             dead = row["attempts"] >= row["max_attempts"]
             delay = min(300, 2 ** min(row["attempts"], 9))
@@ -192,8 +192,8 @@ class Store:
             """, ("dead" if dead else "ready", now + delay, now, error, job_id))
 
     def retry(self, job_id):
-        now = self.clock()
         with self.transaction() as db:
+            now = self.clock()
             row = db.execute("SELECT * FROM jobs WHERE id=?", (job_id,)).fetchone()
             if row is None:
                 raise NotFound("job not found")
