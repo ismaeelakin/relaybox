@@ -445,3 +445,12 @@ h1 {
 .metrics article:last-child strong {
   color: #9c3b13;
 }
+
+header {
+  border-top: 8px solid #9c3b13;
+  padding-top: 18px;
+}
+h1 {
+  font-family: Tahoma, Geneva, sans-serif;
+  letter-spacing: -1.5px;
+}

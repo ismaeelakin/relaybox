@@ -6,7 +6,7 @@ Python · SQLite · TypeScript · JavaScript
 
 [![Queue correctness](https://github.com/ismaeelakin/relaybox/actions/workflows/ci.yml/badge.svg)](https://github.com/ismaeelakin/relaybox/actions/workflows/ci.yml)
 
-![RelayBox operations console](docs/console-current.png)
+![RelayBox operations console](docs/console-identity.png)
 
 ## What it does
 
@@ -37,7 +37,7 @@ Open **http://127.0.0.1:8080**. Enqueue the example payload, then click **Acknow
 
 ## Architecture
 
-![Architecture](docs/architecture.svg)
+![Architecture](docs/architecture-project.svg)
 
 ## Worker protocol
 
