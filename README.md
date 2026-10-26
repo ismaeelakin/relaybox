@@ -1,12 +1,17 @@
 # RelayBox
 
-**Durable work, visible state.** A small job queue built to make delivery semantics, failure recovery, and operational decisions easy to inspect.
+A single-host job queue built to make delivery semantics, failure recovery, and operational decisions easy to inspect.
 
 Python · SQLite · TypeScript · JavaScript
 
 [![Queue correctness](https://github.com/ismaeelakin/relaybox/actions/workflows/ci.yml/badge.svg)](https://github.com/ismaeelakin/relaybox/actions/workflows/ci.yml)
 
 ![RelayBox operations console](docs/console.png)
+
+## Architecture
+
+![Architecture](docs/architecture.svg)
+
 
 ## What it does
 
@@ -81,6 +86,6 @@ The suite covers concurrent claims and duplicate enqueueing, restart persistence
 
 [Architecture and failure analysis](docs/ARCHITECTURE.md) · [API](docs/API.md) · [Contributing](CONTRIBUTING.md)
 
-## Scope and provenance
+## Scope
 
-Created for Ismaeel Habeeb's public engineering portfolio with AI-assisted implementation and documentation. This repository demonstrates inspectable engineering choices; it does not claim production traffic, external customers, or independent human review. Future work should be driven by tested requirements: heartbeat fencing, retention, a hardened server adapter, and measured contention limits.
+This is a single-host reference project. Retention, heartbeat extension and a hardened HTTP adapter remain future work. No production traffic or external customer use is claimed.

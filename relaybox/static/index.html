@@ -3,7 +3,7 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RelayBox · Queue console</title><link rel="stylesheet" href="/style.css"><script type="module" src="/app.js"></script></head>
 <body><main>
 <header><a class="brand" href="/">R<span>RelayBox</span></a><span class="local">LOCAL DEVELOPMENT</span></header>
-<section class="intro"><p class="eyebrow">DURABLE WORK, VISIBLE STATE</p><h1>Every job has a next step.</h1><p>A single-host queue with leases, retries and a dead-letter workflow.<br>Inspect the state. Exercise a failure. See what survives.</p></section>
+<section class="intro"><p class="eyebrow">SINGLE-HOST JOB QUEUE</p><h1>Queue operations</h1><p>A single-host queue with leases, retries and a dead-letter workflow.<br>Enqueue a job, acknowledge it, or test a retry.</p></section>
 <section class="toolbar" aria-label="Queue controls"><label>Queue<input id="queue" value="default" maxlength="64" pattern="[A-Za-z0-9_-]+" required></label><button id="refresh" class="subtle">Refresh</button><span class="spacer"></span><button id="process">Acknowledge one</button><button id="fail" class="subtle">Simulate failure</button></section>
 <p id="status" role="status" aria-live="polite">Connecting…</p>
 <section class="metrics" aria-label="Job counts"><article><p>Ready</p><strong id="count-ready">0</strong><span>Waiting or delayed</span></article><article><p>Leased</p><strong id="count-leased">0</strong><span>Held by a worker</span></article><article><p>Completed</p><strong id="count-done">0</strong><span>Acknowledged</span></article><article><p>Dead letter</p><strong id="count-dead">0</strong><span>Needs a decision</span></article></section>
