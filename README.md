@@ -4,6 +4,8 @@
 
 Python · SQLite · TypeScript · JavaScript
 
+[![Queue correctness](https://github.com/ismaeelakin/relaybox/actions/workflows/ci.yml/badge.svg)](https://github.com/ismaeelakin/relaybox/actions/workflows/ci.yml)
+
 ![RelayBox operations console](docs/console.png)
 
 ## What it does

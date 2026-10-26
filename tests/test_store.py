@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from pathlib import Path
 import tempfile
 import unittest
@@ -73,6 +74,25 @@ class StoreTests(unittest.TestCase):
         with self.assertRaises(Conflict):
             self.store.ack(new["id"], old["lease_token"])
         self.store.ack(new["id"], new["lease_token"])
+
+    def test_lease_deadline_is_checked_after_acquiring_write_lock(self):
+        self.add()
+        job = self.store.claim("mail", lease_seconds=30)
+        original_transaction = self.store.transaction
+
+        @contextmanager
+        def delayed_transaction():
+            with original_transaction() as db:
+                # Model time spent waiting for SQLite's write lock, without a sleep.
+                self.now += 31
+                yield db
+
+        self.store.transaction = delayed_transaction
+        with self.assertRaises(Conflict):
+            self.store.ack(job["id"], job["lease_token"])
+        # Claim must also start its new lease after lock acquisition.
+        reclaimed = self.store.claim("mail", lease_seconds=30)
+        self.assertEqual(reclaimed["lease_until"], self.now + 30)
 
     def test_retry_backoff_dead_letter_and_manual_replay(self):
         self.add(max_attempts=2)

@@ -4,7 +4,7 @@ The store owns queue correctness. The HTTP adapter validates transport boundarie
 
 ## Transaction boundaries
 
-Each mutation opens its own SQLite connection, enters `BEGIN IMMEDIATE`, validates current state, writes, and commits. Exceptions roll back. A competing writer waits up to ten seconds before the adapter returns a retryable storage error. WAL permits readers alongside a writer. Snapshots read counts and rows in one transaction.
+Each mutation opens its own SQLite connection, enters `BEGIN IMMEDIATE`, samples the clock after acquiring the write lock, validates current state, writes, and commits. Sampling before lock acquisition would allow an acknowledgment to use a timestamp captured before a long lock wait. A deterministic regression test models that wait and verifies both rejection of the expired acknowledgment and the deadline of a new lease. Exceptions roll back. A competing writer waits up to ten seconds before the adapter returns a retryable storage error. WAL permits readers alongside a writer. Snapshots read counts and rows in one transaction.
 
 Enqueue checks `(queue, idempotency_key)` inside the write transaction, compares a SHA-256 fingerprint of canonical JSON plus delay and retry budget, then inserts. A unique constraint also encodes the invariant in storage. SHA-256 is used for identity comparison, not secret protection.
 
