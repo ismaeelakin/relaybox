@@ -48,6 +48,32 @@ curl -H "Content-Type: application/json" -d '{"queue":"default","lease_seconds":
 
 The claim returns `{"job":null}` if nothing is available. Otherwise it includes an opaque `lease_token`. Send that token to `POST /api/jobs/{id}/ack` only after the external work succeeds, or to `/fail` with a short `error` string. See [the API contract](docs/API.md).
 
+### PowerShell walkthrough
+
+With the server running, open a second PowerShell window. This example uses
+`Invoke-RestMethod` so it works without Unix shell quoting or relying on the
+Windows PowerShell `curl` alias. A unique queue keeps the demonstration separate
+from jobs already in your database.
+
+```powershell
+$baseUrl = 'http://127.0.0.1:8080'
+$queue = 'docs-' + [guid]::NewGuid().ToString('N')
+$body = @{ queue = $queue; payload = @{ task = 'demo' } } | ConvertTo-Json
+$created = Invoke-RestMethod -Method Post -Uri "$baseUrl/api/jobs" -ContentType 'application/json' -Body $body
+$body = @{ queue = $queue; lease_seconds = 30 } | ConvertTo-Json
+$claimed = Invoke-RestMethod -Method Post -Uri "$baseUrl/api/claim" -ContentType 'application/json' -Body $body
+$job = $claimed.job
+if ($null -eq $job) { throw 'No job available to acknowledge.' }
+# Real workers perform their external work before acknowledging success.
+$body = @{ lease_token = $job.lease_token } | ConvertTo-Json
+Invoke-RestMethod -Method Post -Uri "$baseUrl/api/jobs/$($job.id)/ack" -ContentType 'application/json' -Body $body
+Invoke-RestMethod -Uri "$baseUrl/api/jobs?queue=$queue"
+```
+
+The acknowledgment returns `ok: True`; the final snapshot shows one `done` job.
+The lease lasts 30 seconds, so run the claim and acknowledgment together. If it
+expires before acknowledgment, rerun the walkthrough with a fresh queue.
+
 ## Delivery semantics
 
 ```mermaid
